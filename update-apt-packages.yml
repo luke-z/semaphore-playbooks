@@ -17,6 +17,10 @@
       failed_when: update_apt_result.rc != 0
       notify: set_failure_flag
 
+    - name: Debug apt update result
+      debug:
+        var: update_apt_result
+
     # Check if reboot is required
     - name: check if system reboot is required
       stat:
@@ -29,5 +33,5 @@
         name: telegram_notification
       vars:
         execution_fail: "{{ execution_failed }}"
-        telegram_message: "{{ inventory_hostname }} [{{ ansible_ssh_host }}] updated apt packages. {{ reboot_required.stat.exists | ternary('❗ NEEDS REBOOT', '✅') }}"
+        telegram_message: "updated apt packages. {{ reboot_required.stat.exists | ternary('❗ NEEDS REBOOT', '✅') }}"
 
