@@ -9,12 +9,6 @@
         name: python3-pip
         state: present
 
-    # Install docker python module
-    - name: install docker python module
-      pip:
-        name: docker
-        state: present
-
     # Cleanup docker images
     - name: cleanup docker images
       community.docker.docker_prune:
