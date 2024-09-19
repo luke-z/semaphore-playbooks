@@ -11,7 +11,6 @@
           apt:
             upgrade: yes
             update_cache: yes
-          ignore_errors: yes
       rescue:
         # Import the telegram notification role
         - name: Notify via Telegram
