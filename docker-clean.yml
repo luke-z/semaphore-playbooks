@@ -34,8 +34,7 @@
         path: "{{ item }}"
         state: absent
       with_items:
-        - /opt/github-runner-2/_work
-        - /opt/github-runner/_work
+        - /opt/action-runners/buildhost02/_work
         - /usr/local/share/.cache/yarn
 
     - name: Recreate empty _work directories
@@ -44,7 +43,6 @@
         path: "{{ item }}"
         state: directory
       with_items:
-        - /opt/github-runner-2/_work
-        - /opt/github-runner/_work
+        - /opt/action-runners/buildhost02/_work
         - /usr/local/share/.cache/yarn
         - /usr/local/share/.cache/yarn/v6
