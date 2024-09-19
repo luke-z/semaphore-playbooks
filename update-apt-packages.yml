@@ -14,12 +14,8 @@
         update_cache: yes
       ignore_errors: yes
       register: update_apt_result
-      failed_when: update_apt_result.rc != 0
+      failed_when: update_apt_result.failed
       notify: set_failure_flag
-
-    - name: Debug apt update result
-      debug:
-        var: update_apt_result
 
     # Check if reboot is required
     - name: check if system reboot is required
