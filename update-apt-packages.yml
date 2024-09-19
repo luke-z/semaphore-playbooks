@@ -29,5 +29,5 @@
         api_args:
           chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
           message_thread_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_THREAD_ID') }}"
-          text: "{{ inventory_hostname }} updated apt packages {{ 'and rebooted' if !reboot_required.stat.exists else '' }}"
+          text: "{{ inventory_hostname }} updated apt packages {{ reboot_required.stat.exists | ternary('and rebooted', 'not rebooted') }}"
           parse_mode: "html"
