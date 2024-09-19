@@ -20,7 +20,7 @@
       reboot:
         reboot_timeout: 3600
       when: reboot_required.stat.exists
-    
+
     - name: Basic usage
       ansible.builtin.debug:
         msg: "{{ lookup('ansible.builtin.env', 'TELEGRAM_TOKEN') }}"
@@ -31,6 +31,5 @@
         api_args:
           chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
           message_thread_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_THREAD_ID') }}"
-          text: "Your precious application has been deployed: https://example.com"
+          text: "{{ inventory_hostname }}: Updated apt packages"
           parse_mode: "MarkdownV2"
-
