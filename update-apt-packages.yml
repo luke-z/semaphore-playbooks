@@ -24,6 +24,6 @@
     # Import the telegram notification role
     - name: Notify via Telegram
       import_role:
-        name: telegram_notify
+        name: telegram_notification
       vars:
         telegram_message: "{{ inventory_hostname }} [{{ ansible_ssh_host }}] updated apt packages {{ reboot_required.stat.exists | ternary('and rebooted', '') }}"
