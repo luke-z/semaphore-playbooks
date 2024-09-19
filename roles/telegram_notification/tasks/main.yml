@@ -11,5 +11,5 @@
     api_args:
       chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
       message_thread_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_THREAD_ID') }}"
-      text: "{{ telegram_message }}"
+      text: "{{ final_telegram_message }}"
       parse_mode: "html"
