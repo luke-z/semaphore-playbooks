@@ -28,6 +28,6 @@
       import_role:
         name: telegram_notification
       vars:
-        execution_failed: "{{ execution_failed }}"
+        execution_fail: "{{ execution_failed }}"
         telegram_message: "{{ inventory_hostname }} [{{ ansible_ssh_host }}] updated apt packages. {{ reboot_required.stat.exists | ternary('❗ NEEDS REBOOT', '✅') }}"
 
