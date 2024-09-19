@@ -1,13 +1,21 @@
 ---
 - hosts: all
+  name: Update apt packages
   become: 1
   serial: 1
+  vars:
+    execution_failed: false
+
   tasks:
     # Update apt packages
     - name: update apt packages
       apt:
         upgrade: yes
         update_cache: yes
+      ignore_errors: yes
+      register: update_apt_result
+      failed_when: update_apt_result.rc != 0
+      notify: set_failure_flag
 
     # Check if reboot is required
     - name: check if system reboot is required
@@ -15,15 +23,15 @@
         path: /var/run/reboot-required
       register: reboot_required
 
-    # Reboot machine if required
-    - name: reboot machine
-      reboot:
-        reboot_timeout: 3600
-      when: reboot_required.stat.exists
-
     # Import the telegram notification role
     - name: Notify via Telegram
       import_role:
         name: telegram_notification
       vars:
-        telegram_message: "{{ inventory_hostname }} [{{ ansible_ssh_host }}] updated apt packages {{ reboot_required.stat.exists | ternary('and rebooted', '') }}"
+        execution_failed: "{{ execution_failed }}"
+        telegram_message: "{{ inventory_hostname }} [{{ ansible_ssh_host }}] updated apt packages. {{ reboot_required.stat.exists | ternary('❗ NEEDS REBOOT', '✅') }}"
+
+  handlers:
+    - name: Set failure flag
+      set_fact:
+        execution_failed: true
