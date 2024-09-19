@@ -21,9 +21,7 @@
         reboot_timeout: 3600
       when: reboot_required.stat.exists
 
-    - name: Basic usage
-      ansible.builtin.debug:
-        msg: "{{ lookup('ansible.builtin.env', 'TELEGRAM_TOKEN') }}"
+    
 
     - name: Send notify to Telegram
       community.general.telegram:
@@ -31,5 +29,5 @@
         api_args:
           chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
           message_thread_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_THREAD_ID') }}"
-          text: "{{ inventory_hostname }} Updated apt packages"
+          text: "{{ inventory_hostname }} updated apt packages {{ 'and rebooted' if !reboot_required.stat.exists else '' }}"
           parse_mode: "html"
