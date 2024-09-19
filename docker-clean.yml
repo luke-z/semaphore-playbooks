@@ -1,0 +1,50 @@
+---
+- name: clean docker
+  hosts: all
+  become: true
+  tasks:
+    # Install pip
+    - name: install pip
+      apt:
+        name: python3-pip
+        state: present
+
+    # Install docker python module
+    - name: install docker python module
+      pip:
+        name: docker
+        state: present
+
+    # Cleanup docker images
+    - name: cleanup docker images
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        timeout: 300
+        images_filters:
+          dangling: false
+        networks: true
+        volumes: true
+        builder_cache: true
+
+    # Cleanup _work dirs on the host
+    - name: Remove all content from _work directories
+      become: true # Run as root to ensure permissions
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /opt/github-runner-2/_work
+        - /opt/github-runner/_work
+        - /usr/local/share/.cache/yarn
+
+    - name: Recreate empty _work directories
+      become: true # Run as root to ensure permissions
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /opt/github-runner-2/_work
+        - /opt/github-runner/_work
+        - /usr/local/share/.cache/yarn
+        - /usr/local/share/.cache/yarn/v6

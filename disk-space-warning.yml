@@ -1,0 +1,21 @@
+---
+- name: warning for disk running out of space
+  hosts: all
+  become: true
+  vars:
+    threshold: 80 # Default value for threshold
+    excluded_filesystems: "tmpfs|overlay" # Default value for excluded filesystems
+  tasks:
+    # Check How much disk space is used in %, ignoring tmpfs and overlay
+    - name: check disk space
+      shell: df --output=pcent,target,fstype | egrep -v '{{ excluded_filesystems }}' | tail -n +2
+      register: disk_space
+
+    # Check if disk space used is more than the threshold
+    - name: check if any volume uses more space than the threshold
+      assert:
+        that:
+          - item.split()[0] | replace('%', '') | int <= threshold
+        fail_msg: "Disk space is more than {{ threshold }}% on volume {{ item.split()[1] }}"
+        success_msg: "Disk space is okay on volume {{ item.split()[1] }}"
+      loop: "{{ disk_space.stdout_lines }}"

@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: true
+  serial: 1
+  vars:
+    image_gc_low_threshold: 60
+    image_gc_high_threshold: 75
+  tasks:
+    - name: Check if /etc/rancher/k3s exists
+      stat:
+        path: /etc/rancher/k3s
+      register: k3s_folder
+
+    - name: Create config.yaml with kubelet args for image garbage collection
+      copy:
+        content: |
+          kubelet-arg:
+            - image-gc-low-threshold={{ image_gc_low_threshold }}
+            - image-gc-high-threshold={{ image_gc_high_threshold }}
+        dest: /etc/rancher/k3s/config.yaml
+        owner: root
+        group: root
+        mode: "0644"
+      when: k3s_folder.stat.exists and k3s_folder.stat.isdir
+      notify: restart k3s
+
+  handlers:
+    - name: restart k3s
+      service:
+        name: k3s
+        state: restarted

@@ -1,0 +1,70 @@
+---
+- name: clean docker registry
+  hosts: all
+  vars:
+    registry: "{{ docker_host }}"
+    registry_user: "{{ docker_username }}"
+    registry_pass: "{{ docker_password }}"
+    registry_schema: "{{ docker_host_schema }}"
+    registry_url: "{{ registry_schema }}://{{ registry }}/v2"
+    applications: []
+  tasks:
+    # Fetch tags for applications
+    - name: Fetch tags for applications
+      uri:
+        method: GET
+        url: "{{ registry_url }}/{{ item }}/tags/list"
+        user: "{{ registry_user }}"
+        password: "{{ registry_pass }}"
+        return_content: yes
+      register: tags
+      with_items: "{{ applications }}"
+    - name: Flatten tags results into single array
+      set_fact:
+        tags_dict: "{{ tags_dict | default({}) | combine({item.json.name: item.json.tags | default([]) if item.json.tags is not none else []}) }}"
+      with_items: "{{ tags.results }}"
+      loop_control:
+        label: "{{ item.json.name }}"
+
+    # Fetch manifests
+    - name: Fetch manifests
+      uri:
+        method: GET
+        url: "{{ registry_url }}/{{ item[0].key }}/manifests/{{ item[1] }}"
+        user: "{{ registry_user }}"
+        password: "{{ registry_pass }}"
+        headers:
+          accept: application/vnd.docker.distribution.manifest.v2+json
+        return_content: yes
+      register: manifests_to_remove
+      when:
+        - item.1 is not none
+        - item[1] != item[0].value[-1]
+        - item[1] is not match('^v\d+\.\d+\.\d+$')
+      loop: "{{ tags_dict | dict2items | subelements('value') }}"
+      loop_control:
+        label: "{{ item[0].key ~ '/manifests/' ~ item[1] }}"
+
+    # Delete Manifests
+    - name: Delete Manifests
+      uri:
+        method: DELETE
+        url: "{{ registry_url }}/{{ item.item[0].key }}/manifests/{{ item.docker_content_digest }}"
+        user: "{{ registry_user }}"
+        password: "{{ registry_pass }}"
+        return_content: yes
+        status_code:
+          - 202 # Accepted
+      when: not item.skipped is defined
+      loop: "{{ manifests_to_remove.results }}"
+      loop_control:
+        label: "DELETE {{ registry_url }}/{{ item.item[0].key }}/manifests/{{ item.docker_content_digest | default ('skipped...') }}"
+
+    # Execute Garbage Collect from Docker Registry
+    - name: Execute Garbage Collect from Docker
+      become: true
+      command: docker exec -i registry bin/registry garbage-collect /etc/docker/registry/config.yml
+      args:
+        chdir: /opt/docker-registry
+      register: garbage_collect
+      when: garbage_collect is not defined
