@@ -30,5 +30,7 @@
         token: "{{ lookup('ansible.builtin.env', 'TELEGRAM_TOKEN') }}"
         api_args:
           chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
+          message_thread_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_THREAD_ID') }}"
           text: "Your precious application has been deployed: https://example.com"
+          parse_mode: "MarkdownV2"
 
