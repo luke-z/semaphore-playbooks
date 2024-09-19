@@ -24,5 +24,6 @@
 - name: Send notify to Telegram
   community.general.telegram:
     token: "{{ lookup('ansible.builtin.env', 'TELEGRAM_TOKEN') }}"
-    chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
-    text: "Your precious application has been deployed: https://example.com"
+    api_args:
+      chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
+      text: "Your precious application has been deployed: https://example.com"
