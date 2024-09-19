@@ -18,10 +18,6 @@
       failed_when: update_apt_result.failed
       notify: set_failure_flag
 
-    - name: Debug apt update result
-      debug:
-        var: update_apt_result
-
     # Check if reboot is required
     - name: check if system reboot is required
       stat:
@@ -33,6 +29,6 @@
       import_role:
         name: telegram_notification
       vars:
-        execution_fail: "{{ execution_failed }}"
+        execution_failed: "{{ execution_failed }}"
         telegram_message: "updated apt packages. {{ reboot_required.stat.exists | ternary('❗ NEEDS REBOOT', '✅') }}"
 
