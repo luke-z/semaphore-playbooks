@@ -1,13 +1,13 @@
-[k3s:children]
+[k3s]
 k3s-01 ansible_host=192.168.1.81
 k3s-02 ansible_host=192.168.1.82
 k3s-03 ansible_host=192.168.1.83
 
-[buildhost:children]
+[buildhost]
 buildhost ansible_host=192.168.1.65
 
-[wireguard:children]
+[wireguard]
 wireguard ansible_host=192.168.1.5
 
-[pihole:children]
+[pihole]
 pihole ansible_host=192.168.1.6
