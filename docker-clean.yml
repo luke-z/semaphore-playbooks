@@ -34,3 +34,11 @@
         - /opt/action-runners/buildhost02/_work
         - /usr/local/share/.cache/yarn
         - /usr/local/share/.cache/yarn/v6
+
+    # Import the telegram notification role
+    - name: Notify via Telegram
+      import_role:
+        name: telegram_notification
+      vars:
+        telegram_message: "{{ inventory_hostname }} [{{ ansible_ssh_host }}] cleaned docker images and emptied _work directories"
+
