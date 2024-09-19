@@ -3,12 +3,6 @@
   hosts: all
   become: true
   tasks:
-    # Install pip
-    - name: install pip
-      apt:
-        name: python3-pip
-        state: present
-
     # Cleanup docker images
     - name: cleanup docker images
       community.docker.docker_prune:
