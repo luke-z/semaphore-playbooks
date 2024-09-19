@@ -2,8 +2,6 @@
 - hosts: all
   name: Update apt packages
   serial: 1
-  vars:
-    execution_failed: false
 
   tasks:
     # Update apt packages
@@ -22,7 +20,7 @@
           vars:
             telegram_message: >-
               {{ inventory_hostname }} [{{ ansible_ssh_host }}]:
-              updated apt packages. {{ reboot_required.stat.exists | ternary('❗ NEEDS REBOOT', '✅') }}
+              error
 
     # Check if reboot is required
     - name: check if system reboot is required
