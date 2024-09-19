@@ -3,7 +3,7 @@
   set_fact:
     final_telegram_message: >-
       {{ inventory_hostname }} [{{ ansible_ssh_host }}]: 
-      {{ '❌ An error occurred executing "{{ ansible_play_name }}". Please check the logs.' if execution_failed else passed_message }}
+      {{ '❌ An error occurred executing "{{ ansible_play_name }}". Please check the logs.' if execution_failed else telegram_message }}
 
 - name: Send notification to Telegram
   community.general.telegram:
