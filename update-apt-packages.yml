@@ -31,5 +31,5 @@
         api_args:
           chat_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_CHAT_ID') }}"
           message_thread_id: "{{ lookup('ansible.builtin.env', 'TELEGRAM_THREAD_ID') }}"
-          text: "{{ inventory_hostname }}: Updated apt packages"
+          text: "{{ inventory_hostname }} Updated apt packages"
           parse_mode: "MarkdownV2"
