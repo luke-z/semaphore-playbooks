@@ -2,6 +2,7 @@
 - hosts: all
   name: Update apt packages
   become: 1
+  ignore_errors: yes
   serial: 1
   vars:
     execution_failed: false
