@@ -20,6 +20,10 @@
       reboot:
         reboot_timeout: 3600
       when: reboot_required.stat.exists
+    
+    - name: Basic usage
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.env', 'TELEGRAM_TOKEN') }}"
 
     - name: Send notify to Telegram
       community.general.telegram:
