@@ -1,6 +1,7 @@
 ---
 - hosts: all
   name: Update apt packages
+  ignore_errors: yes
   serial: 1
 
   tasks:
@@ -20,7 +21,7 @@
             telegram_message: >-
               {{ inventory_hostname }} [{{ ansible_ssh_host }}]:
 
-              ❌ error updating apt packages
+              Error updating apt packages ❌
         - name: Fail the playbook
           fail:
             msg: "Failed to update apt packages"
